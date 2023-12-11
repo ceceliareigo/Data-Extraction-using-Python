@@ -1,0 +1,56 @@
+
+Project: Whiskey in Country Music
+Objective: Analyze the top 100 country songs to see how many mention "whiskey" and identify which song refers to whiskey the most frequently.
+
+
+
+Data Source: Spotify for song identification, and third-party lyric databases/APIs for lyrics.
+
+
+
+Steps:
+Extract Data:Pull the top 100 country songs from Spotify for the past year. Extract lyrics for these songs from lyric databases or associated APIs.
+Lyric Analysis: Use text analysis to count mentions of the word "whiskey" in each song. Identify which song(s) have the highest mentions of "whiskey."
+Report Findings: Summarize the findings, noting how prevalent "whiskey" is in popular country music.
+
+
+
+Deliverables:
+Dataset: Data detailing mentions of "whiskey" in the top 100 country songs.
+Insights Report: Observations about the role whiskey plays in country lyrics and which songs spotlight it the most.
+Visual Representation: A bar graph showcasing songs and their "whiskey" mentions.
+
+
+
+
+import csv
+import lyricsgenius
+import time 
+
+
+genius_token = "LMs8g72hgdQ50PPjGMbiZ3-WqPHoyl-0_Rn5IgMTkiG2jUduhw5G5BVKaOq0uNLd"
+genius = lyricsgenius.Genius(genius_token)
+
+def get_lyrics(song_name):
+    song = genius.search_song(song_name)
+    return song.lyrics if song else None
+
+def count_whiskey(lyrics):
+    return lyrics.lower().count('whiskey')
+
+with open(r'C:\Users\cecel\OneDrive\Desktop\Up Work Job Search\Upwork- Olivia\Country Music\Whiskey occurences\Tennessee Whiskey Copy3.csv', 'r') as csv_file:
+    reader = csv.reader(csv_file)
+    next(reader)  # skip the header row if your CSV has one
+
+    for row in reader:
+        song_name = row[0]
+        lyrics = get_lyrics(song_name)
+
+        if lyrics:
+            whiskey_count = count_whiskey(lyrics)
+            print(f"The song '{song_name}' mentions 'whiskey' {whiskey_count} times.")
+        else:
+            print(f"Couldn't find lyrics for '{song_name}'")
+
+        time.sleep(10)  # Pause for 2 seconds before processing the next song
+  
