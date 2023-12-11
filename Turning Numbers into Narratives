@@ -1,0 +1,95 @@
+1. Fan Loyalty: Using Spotify's 'repeat listens' data, identify which rock bands have the most loyal fan base.
+
+
+
+Project Scope:
+- Data Collection: Gather Spotify's 'repeat listens' data for rock songs and artists over a predefined period (e.g., the past year).
+- Data Segmentation: Filter out non-rock genres to focus solely on rock bands.
+- Analysis Parameters: Consider factors like number of repeat listens, duration between listens, and the diversity of songs being replayed by the same users.
+- Comparative Analysis: Compare repeat listens data among various rock bands to rank them based on fan loyalty.
+- Demographic Insights: If possible, gather demographic data on listeners to understand the age, region, or other factors influencing fan loyalty.
+
+
+
+Deliverables:
+- A detailed report on the top rock bands based on repeat listens.
+- Charts and graphs illustrating fan loyalty metrics.
+- Insights on demographic trends tied to fan loyalty. (if possible)
+
+
+
+Story: Fan Loyalty: "Rock 'n' Replay: The Bands That Keep Fans Hitting Repeat"
+
+
+
+2. Rock Workout: Using Spotify's workout playlists, find out which rock songs are most popular for getting the adrenaline pumping.
+
+
+
+Project Scope:
+- Data Collection: Gather data from Spotify's workout playlists, focusing on those that feature rock songs.
+- Song Analysis: Identify frequently featured rock songs in these playlists and their associated play counts.
+- Audio Feature Examination: Analyze the audio features of these popular rock workout songs (e.g., tempo, energy, rhythm) to determine what makes them apt for workouts.
+- Comparative Analysis: Compare rock songs with other genres in workout playlists to understand rock's unique appeal.
+- User Feedback: If feasible, gather feedback or reviews from Spotify users about why they prefer certain rock songs for their workouts.
+
+
+
+Deliverables:
+- A comprehensive report detailing the most popular rock songs in workout playlists.
+- Infographics showcasing the key audio features of popular rock workout songs.
+- Comparative charts illustrating rock's standing against other genres in workout settings.
+
+
+import requests
+import base64
+
+# Your Spotify Developer Credentials
+CLIENT_ID = 'Enter your own Client ID
+CLIENT_SECRET = 'Enter your own Client Secret'
+
+# Base URL of Spotify API
+BASE_URL = 'https://api.spotify.com/v1/'
+
+# Authenticate with Spotify to get access token
+def get_access_token(client_id, client_secret):
+    auth_url = 'https://accounts.spotify.com/api/token'
+    
+    # Encode as Base64
+    client_creds = f"{client_id}:{client_secret}"
+    client_creds_b64 = base64.b64encode(client_creds.encode())
+
+    # Define headers and payload
+    token_headers = {
+        "Authorization": f"Basic {client_creds_b64.decode()}"
+    }
+    token_data = {
+        "grant_type": "client_credentials"
+    }
+    
+    token_r = requests.post(auth_url, headers=token_headers, data=token_data)
+    token_response_data = token_r.json()
+    
+    return token_response_data["access_token"]
+
+# Search for rock artists
+def search_rock_artists(access_token, limit=10):
+    search_url = BASE_URL + "search"
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+    params = {
+        "q": "genre:rock",
+        "type": "artist",
+        "limit": limit
+    }
+    r = requests.get(search_url, headers=headers, params=params)
+    return r.json()
+
+if __name__ == "__main__":
+    access_token = get_access_token(CLIENT_ID, CLIENT_SECRET)
+    rock_artists = search_rock_artists(access_token)
+    
+    for artist in rock_artists["artists"]["items"]:
+        print(f"Name: {artist['name']}, Popularity: {artist['popularity']}")
+
